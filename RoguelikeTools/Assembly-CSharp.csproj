@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Assets\Script\ColiderAlram.cs" />
     <Compile Include="Assets\Script\LevelManager_Dice.cs" />
+    <Compile Include="Assets\Script\LevelManager_BSP.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
