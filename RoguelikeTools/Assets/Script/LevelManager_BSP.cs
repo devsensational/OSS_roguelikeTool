@@ -7,66 +7,44 @@ public class LevelManager_BSP : MonoBehaviour
     [SerializeField]
     public GameObject floor;
 
-    public int setWidth , setHeight;
+    public int setWidth, setHeight;
     public int setMax;
 
     void Start()
     {
         Debug.Log("start");
         RoomNode root = new RoomNode(0, 0, setWidth, setHeight, 0, setMax, null);
-        Debug.Log("asd");
-        makeMap(root);
+        makeMap(root, "root");
+
+
     }
 
     void Update()
     {
-        
+
+    }
+    void searchRoom()
+    {
+
     }
 
-    void makeMap(RoomNode root)
+    void makeMap(RoomNode ptr, string whereIs)
     {
-        RoomNode ptr = root;
-        GameObject roomFloor = Instantiate(floor);
-
-        float floorSize = floor.GetComponent<SpriteRenderer>().sprite.bounds.size.x;
-        roomFloor.transform.position = new Vector3(ptr.getX(), ptr.getY(), 0);
-        while(ptr.getLeftNode() != null)
+        if (ptr != null)
         {
-            ptr = ptr.getLeftNode();
+            float floorSize = floor.GetComponent<SpriteRenderer>().sprite.bounds.size.x;
             for (int i = ptr.getX(); i <= ptr.getWidth() + ptr.getX(); i++)
             {
                 for (int j = ptr.getY(); j <= ptr.getHeight() + ptr.getY(); j++)
                 {
-                    GameObject leftRoomFloor = Instantiate(floor);
-                    leftRoomFloor.transform.position = new Vector3(floorSize * i, floorSize * j, 0);
-                    leftRoomFloor.name = ptr.getIndex() + "번 노드(왼쪽)";
+                    GameObject RoomFloor = Instantiate(floor);
+                    RoomFloor.transform.position = new Vector3(floorSize * i -1, floorSize * j -1 , 0);
+                    RoomFloor.name = ptr.getIndex() + "번 노드 "+ whereIs;
                 }
             }
-            //leftRoomFloor.transform.position = new Vector3(floorSize * ptr.getX(), floorSize * ptr.getY(), 0);
-            //leftRoomFloor.transform.localScale = new Vector3(floorSize * ptr.getWidth(), floorSize * ptr.getHeight(), 0);
-            Debug.Log("L index = " + ptr.getIndex() + " x = " + ptr.getX() + " y = " + ptr.getY());
+            makeMap(ptr.getLeftNode(), "left");
+            makeMap(ptr.getRightNode(), "right");
         }
-        
-        ptr = root;
-        while (ptr.getRightNode() != null)
-        {
-            ptr = ptr.getRightNode();
-            for (int i = ptr.getX(); i <= ptr.getWidth() + ptr.getX(); i++)
-            {
-                for (int j = ptr.getY(); j <= ptr.getHeight() + ptr.getY(); j++)
-                {
-                    GameObject rightRoomFloor = Instantiate(floor);
-                    rightRoomFloor.transform.position = new Vector3(floorSize * i, floorSize * j, 0);
-                    rightRoomFloor.name = ptr.getIndex() + "번 노드(오른쪽)";
-                }
-            }
-
-            //rightRoomFloor.transform.position = new Vector3(ptr.getX(), ptr.getY(), 0);
-            //rightRoomFloor.transform.localScale = new Vector3(ptr.getWidth(), ptr.getHeight(), 0);
-            Debug.Log("R index = " + ptr.getIndex() + " x = " + ptr.getX() + " y = " + ptr.getY());
-            Debug.Log("오른쪽 노드 오브젝트 생성됨");
-        }
-        
     }
 }
 
