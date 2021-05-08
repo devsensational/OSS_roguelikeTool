@@ -236,9 +236,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floor: {fileID: 5868608073785931764, guid: 5bd6adadb0d54db4e8bf7ac6b45ec231, type: 3}
-  setWidth: 30
-  setHeight: 20
-  setMax: 4
+  setWidth: 40
+  setHeight: 30
+  setMax: 7
 --- !u!4 &1232421500
 Transform:
   m_ObjectHideFlags: 0

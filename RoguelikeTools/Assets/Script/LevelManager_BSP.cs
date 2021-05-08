@@ -32,19 +32,36 @@ public class LevelManager_BSP : MonoBehaviour
     {
         if (ptr != null)
         {
-            float floorSize = floor.GetComponent<SpriteRenderer>().sprite.bounds.size.x;
-            for (int i = ptr.getX(); i <= ptr.getWidth() + ptr.getX(); i++)
-            {
-                for (int j = ptr.getY(); j <= ptr.getHeight() + ptr.getY(); j++)
-                {
-                    GameObject RoomFloor = Instantiate(floor);
-                    RoomFloor.transform.position = new Vector3(floorSize * i -1, floorSize * j -1 , 0);
-                    RoomFloor.name = ptr.getIndex() + "번 노드 "+ whereIs;
-                }
-            }
             makeMap(ptr.getLeftNode(), "left");
             makeMap(ptr.getRightNode(), "right");
+            
+        }else if(ptr == null)
+        {
+            return;
         }
+
+        if (ptr.getLeftNode() == null && ptr.getRightNode() == null)
+        {
+            float floorSize = floor.GetComponent<SpriteRenderer>().sprite.bounds.size.x;
+            for (int i = ptr.getX(); i <= ptr.getWidth() + ptr.getX() -2 ; i++)
+            {
+                for (int j = ptr.getY(); j <= ptr.getHeight() + ptr.getY() -2 ; j++)
+                {
+                    GameObject RoomFloor = Instantiate(floor);
+                    RoomFloor.transform.position = new Vector3(floorSize * i , floorSize * j , 0);
+                    RoomFloor.name = ptr.getIndex() + "번 노드 " + whereIs;
+                }
+            }
+        }
+    }
+    
+    void makeHallway(RoomNode ptr)
+    {
+        if(ptr != null)
+        {
+            ptr.getLeftNode().getX();
+        }
+
     }
 }
 
@@ -53,9 +70,6 @@ class RoomNode
     RoomNode leftNode;
     RoomNode rightNode;
     RoomNode parentNode;
-
-    RoomNode test;
-
 
     int x, y;
     int width, height;
@@ -75,7 +89,10 @@ class RoomNode
         this.setMax = setMax;
 
         this.index++;
-        searchNode();
+        if(this.parentNode != null)
+        {
+            searchNode(this.parentNode);
+        }
         if (this.index < this.setMax) { 
             makeNode();
         }
@@ -90,38 +107,27 @@ class RoomNode
             Debug.Log("세로 노드 생성");
             int leftWidth = (int)(width * (randomNum * 0.1f));
             int rightWidth = width - leftWidth;
-            leftNode = new RoomNode(x, y, leftWidth, height, index, setMax, this);
-            rightNode = new RoomNode(x + leftWidth, y, rightWidth, height, index, setMax, this);
-            if (leftNode != null)
+            if (leftWidth > 4 && rightWidth > 4)
             {
-                Debug.Log("세로 왼쪽노드 생성");
+                leftNode = new RoomNode(x, y, leftWidth, height, index, setMax, this);
+                rightNode = new RoomNode(x + leftWidth, y, rightWidth, height, index, setMax, this);
             }
-            if(rightNode != null)
-            {
-                Debug.Log("세로 오른쪽노드 생성");
-            }
-
         }
         else
         {
             Debug.Log("가로노드 생성");
             int leftHeight = (int)(height * (randomNum * 0.1f));
             int rightHeight = height - leftHeight;
-            leftNode = new RoomNode(x, y, width, leftHeight, index, setMax, this);
-            rightNode = new RoomNode(x, y + leftHeight, width, rightHeight, index, setMax, this); 
-            if (leftNode != null)
+            if (leftHeight > 4 && rightHeight > 4)
             {
-                Debug.Log("가로 왼쪽노드 생성");
-            }
-            else if (rightNode != null)
-            {
-                Debug.Log("가로 오른쪽노드 생성");
+                leftNode = new RoomNode(x, y, width, leftHeight, index, setMax, this);
+                rightNode = new RoomNode(x, y + leftHeight, width, rightHeight, index, setMax, this);
             }
         }
     
     }
 
-    void searchNode()
+    void searchNode(RoomNode ptr)
     {
 
     }
