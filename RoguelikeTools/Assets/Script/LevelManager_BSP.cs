@@ -6,15 +6,20 @@ public class LevelManager_BSP : MonoBehaviour
 {
     [SerializeField]
     public GameObject floor;
+    public GameObject wall;
+    public GameObject monster1, monster2;
+    public GameObject item;
 
     public int setWidth, setHeight;
     public int setMax;
+    public int setHallwaySize;
 
     void Start()
     {
         Debug.Log("start");
         RoomNode root = new RoomNode(0, 0, setWidth, setHeight, 0, setMax, null);
         makeMap(root, "root");
+        makeHallway(root);
 
 
     }
@@ -43,9 +48,9 @@ public class LevelManager_BSP : MonoBehaviour
         if (ptr.getLeftNode() == null && ptr.getRightNode() == null)
         {
             float floorSize = floor.GetComponent<SpriteRenderer>().sprite.bounds.size.x;
-            for (int i = ptr.getX(); i <= ptr.getWidth() + ptr.getX() -2 ; i++)
+            for (int i = ptr.getX(); i <= ptr.getWidth() + ptr.getX() -3 ; i++)
             {
-                for (int j = ptr.getY(); j <= ptr.getHeight() + ptr.getY() -2 ; j++)
+                for (int j = ptr.getY(); j <= ptr.getHeight() + ptr.getY() -3 ; j++)
                 {
                     GameObject RoomFloor = Instantiate(floor);
                     RoomFloor.transform.position = new Vector3(floorSize * i , floorSize * j , 0);
@@ -59,10 +64,82 @@ public class LevelManager_BSP : MonoBehaviour
     {
         if(ptr != null)
         {
-            ptr.getLeftNode().getX();
+            makeHallway(ptr.getLeftNode());
+            makeHallway(ptr.getRightNode());
+        }
+        else
+        {
+            return;
+        }
+        float floorSize = floor.GetComponent<SpriteRenderer>().sprite.bounds.size.x;
+        if (ptr.getLeftNode() != null && ptr.getRightNode() != null) {
+            if ((ptr.getLeftNode().getLeftNode() == null && ptr.getLeftNode().getRightNode() == null) && (ptr.getRightNode().getLeftNode() == null && ptr.getRightNode().getRightNode() == null))
+            {
+                if (ptr.getIndex() % 2 == 1)
+                {
+                    for (int i = ptr.getLeftNode().getX(); i < ptr.getRightNode().getX() ; i++)
+                    {
+                        for (int j = ptr.getLeftNode().getY() + (ptr.getLeftNode().getHeight() / 2); j < ptr.getLeftNode().getY() + (ptr.getLeftNode().getHeight() / 2) + setHallwaySize; j++)
+                        {
+                            GameObject hallwayFloor = Instantiate(floor);
+                            hallwayFloor.transform.position = new Vector3(floorSize * i, floorSize * j, 0);
+                            hallwayFloor.name = ptr.getIndex() + "번 가로 복도 ";
+                            Debug.Log("가로생성");
+                        }
+                    }
+
+
+                }
+                else if(ptr.getIndex() % 2 == 0)
+                {
+                    for (int i = ptr.getLeftNode().getY(); i < ptr.getRightNode().getY(); i++)
+                    {
+                        for (int j = ptr.getLeftNode().getX(); j < ptr.getLeftNode().getX() + setHallwaySize; j++)
+                        {
+                            GameObject hallwayFloor = Instantiate(floor);
+                            hallwayFloor.transform.position = new Vector3(floorSize * j, floorSize * i, 0);
+                            hallwayFloor.name = ptr.getIndex() + "번 세로 복도 ";
+                            Debug.Log("세로생성");
+                        }
+                    }
+
+                }
+            }
         }
 
     }
+    /*
+    void makeHallway(RoomNode ptr)
+    {
+        if(ptr != null)
+        {
+            float floorSize = floor.GetComponent<SpriteRenderer>().sprite.bounds.size.x;
+            if (ptr.getIndex() % 2 == 1) //가로 복도
+            {
+                if (ptr.getLeftNode() != null && ptr.getRightNode() != null)
+                {
+                    for (int i = ptr.getLeftNode().getX(); i< ptr.getRightNode().getX(); i++)
+                    {
+                        for (int j = ptr.getLeftNode().getY(); j < ptr.getLeftNode().getY() + setHallwaySize; j++) {
+                            GameObject hallwayFloor = Instantiate(floor);
+                            hallwayFloor.transform.position = new Vector3(floorSize * i, floorSize * j, 0);
+                            hallwayFloor.name = ptr.getIndex() + "번 복도 ";
+                            Debug.Log("ㅇ?");
+                        }
+                    }
+                }
+            }
+            else
+            {
+
+            }
+        }else if(ptr == null)
+        {
+            return;
+        }
+
+    }
+    */
 }
 
 class RoomNode

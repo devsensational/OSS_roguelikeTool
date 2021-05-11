@@ -230,15 +230,20 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1232421498}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ae7f653e6f814e4469270b28cdc212b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   floor: {fileID: 5868608073785931764, guid: 5bd6adadb0d54db4e8bf7ac6b45ec231, type: 3}
-  setWidth: 40
-  setHeight: 30
-  setMax: 7
+  wall: {fileID: 0}
+  monster1: {fileID: 0}
+  monster2: {fileID: 0}
+  item: {fileID: 0}
+  setWidth: 60
+  setHeight: 60
+  setMax: 6
+  setHallwaySize: 2
 --- !u!4 &1232421500
 Transform:
   m_ObjectHideFlags: 0
