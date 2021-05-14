@@ -14,14 +14,16 @@ public class LevelManager_BSP : MonoBehaviour
     public int setMax;
     public int setHallwaySize;
 
+
+    [Range(0, 100)]
+    public int setRandomFillPercent;
+
     void Start()
     {
         Debug.Log("start");
         RoomNode root = new RoomNode(0, 0, setWidth, setHeight, 0, setMax, null);
+        CellularMapGenerator cellGene = new CellularMapGenerator(root, setRandomFillPercent);
         makeMap(root, "root");
-        makeHallway(root);
-
-
     }
 
     void Update()
@@ -48,98 +50,26 @@ public class LevelManager_BSP : MonoBehaviour
         if (ptr.getLeftNode() == null && ptr.getRightNode() == null)
         {
             float floorSize = floor.GetComponent<SpriteRenderer>().sprite.bounds.size.x;
-            for (int i = ptr.getX(); i <= ptr.getWidth() + ptr.getX() -3 ; i++)
+            int[,] buf = ptr.getGrid();
+            for (int i = ptr.getX(); i <= ptr.getWidth() + ptr.getX() -1 ; i++)
             {
-                for (int j = ptr.getY(); j <= ptr.getHeight() + ptr.getY() -3 ; j++)
+                for (int j = ptr.getY(); j <= ptr.getHeight() + ptr.getY() -1 ; j++)
                 {
-                    GameObject RoomFloor = Instantiate(floor);
-                    RoomFloor.transform.position = new Vector3(floorSize * i , floorSize * j , 0);
-                    RoomFloor.name = ptr.getIndex() + "번 노드 " + whereIs;
+                    if (buf[i - ptr.getX(), j - ptr.getY()]  == 1)
+                    {
+                        GameObject RoomFloor = Instantiate(floor);
+                        RoomFloor.transform.position = new Vector3(floorSize * i, floorSize * j, 0);
+                        RoomFloor.name = ptr.getIndex() + "번 노드 바닥" + whereIs;
+                    }else if (buf[i - ptr.getX(), j - ptr.getY()] == 0)
+                    {
+                        GameObject RoomWall = Instantiate(wall);
+                        RoomWall.transform.position = new Vector3(floorSize * i, floorSize * j, 0);
+                        RoomWall.name = ptr.getIndex() + "번 노드 벽 " + whereIs;
+                    }
                 }
             }
         }
     }
-    
-    void makeHallway(RoomNode ptr)
-    {
-        if(ptr != null)
-        {
-            makeHallway(ptr.getLeftNode());
-            makeHallway(ptr.getRightNode());
-        }
-        else
-        {
-            return;
-        }
-        float floorSize = floor.GetComponent<SpriteRenderer>().sprite.bounds.size.x;
-        if (ptr.getLeftNode() != null && ptr.getRightNode() != null) {
-            if ((ptr.getLeftNode().getLeftNode() == null && ptr.getLeftNode().getRightNode() == null) && (ptr.getRightNode().getLeftNode() == null && ptr.getRightNode().getRightNode() == null))
-            {
-                if (ptr.getIndex() % 2 == 1)
-                {
-                    for (int i = ptr.getLeftNode().getX(); i < ptr.getRightNode().getX() ; i++)
-                    {
-                        for (int j = ptr.getLeftNode().getY() + (ptr.getLeftNode().getHeight() / 2); j < ptr.getLeftNode().getY() + (ptr.getLeftNode().getHeight() / 2) + setHallwaySize; j++)
-                        {
-                            GameObject hallwayFloor = Instantiate(floor);
-                            hallwayFloor.transform.position = new Vector3(floorSize * i, floorSize * j, 0);
-                            hallwayFloor.name = ptr.getIndex() + "번 가로 복도 ";
-                            Debug.Log("가로생성");
-                        }
-                    }
-
-
-                }
-                else if(ptr.getIndex() % 2 == 0)
-                {
-                    for (int i = ptr.getLeftNode().getY(); i < ptr.getRightNode().getY(); i++)
-                    {
-                        for (int j = ptr.getLeftNode().getX(); j < ptr.getLeftNode().getX() + setHallwaySize; j++)
-                        {
-                            GameObject hallwayFloor = Instantiate(floor);
-                            hallwayFloor.transform.position = new Vector3(floorSize * j, floorSize * i, 0);
-                            hallwayFloor.name = ptr.getIndex() + "번 세로 복도 ";
-                            Debug.Log("세로생성");
-                        }
-                    }
-
-                }
-            }
-        }
-
-    }
-    /*
-    void makeHallway(RoomNode ptr)
-    {
-        if(ptr != null)
-        {
-            float floorSize = floor.GetComponent<SpriteRenderer>().sprite.bounds.size.x;
-            if (ptr.getIndex() % 2 == 1) //가로 복도
-            {
-                if (ptr.getLeftNode() != null && ptr.getRightNode() != null)
-                {
-                    for (int i = ptr.getLeftNode().getX(); i< ptr.getRightNode().getX(); i++)
-                    {
-                        for (int j = ptr.getLeftNode().getY(); j < ptr.getLeftNode().getY() + setHallwaySize; j++) {
-                            GameObject hallwayFloor = Instantiate(floor);
-                            hallwayFloor.transform.position = new Vector3(floorSize * i, floorSize * j, 0);
-                            hallwayFloor.name = ptr.getIndex() + "번 복도 ";
-                            Debug.Log("ㅇ?");
-                        }
-                    }
-                }
-            }
-            else
-            {
-
-            }
-        }else if(ptr == null)
-        {
-            return;
-        }
-
-    }
-    */
 }
 
 class RoomNode
@@ -152,7 +82,7 @@ class RoomNode
     int width, height;
     int index;
     int setMax;
-
+    int[,] grid;
 
 
     public RoomNode(int x, int y, int width, int height, int index, int setMax, RoomNode parentNode)
@@ -164,12 +94,8 @@ class RoomNode
         this.parentNode = parentNode;
         this.index = index;
         this.setMax = setMax;
-
+        this.grid = new int[width, height]; 
         this.index++;
-        if(this.parentNode != null)
-        {
-            searchNode(this.parentNode);
-        }
         if (this.index < this.setMax) { 
             makeNode();
         }
@@ -202,11 +128,6 @@ class RoomNode
             }
         }
     
-    }
-
-    void searchNode(RoomNode ptr)
-    {
-
     }
 
 
@@ -246,5 +167,16 @@ class RoomNode
     {
         return parentNode;
     }
+
+    public void setGrid(int[,] grid)
+    {
+        this.grid = grid;
+    }
+    
+    public int[,] getGrid()
+    {
+        return grid;
+    }
+
 
 }
