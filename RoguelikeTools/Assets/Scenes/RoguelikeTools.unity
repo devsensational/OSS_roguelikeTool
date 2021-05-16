@@ -235,12 +235,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18ef32e4ed782cb459d45fcb41d77db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 30
-  height: 30
-  randomFillPercent: 49
-  tile: {fileID: 5868608073785931764, guid: 5bd6adadb0d54db4e8bf7ac6b45ec231, type: 3}
-  wall: {fileID: 233869818404918533, guid: 5033a491df7b8ea4386399576272af47, type: 3}
-  seed: 
 --- !u!4 &931878085
 Transform:
   m_ObjectHideFlags: 0
@@ -291,9 +285,9 @@ MonoBehaviour:
   item: {fileID: 0}
   setWidth: 100
   setHeight: 100
-  setMax: 3
+  setMax: 6
   setHallwaySize: 2
-  setRandomFillPercent: 59
+  setRandomFillPercent: 34
 --- !u!4 &1232421500
 Transform:
   m_ObjectHideFlags: 0

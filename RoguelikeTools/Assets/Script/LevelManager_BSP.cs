@@ -14,6 +14,8 @@ public class LevelManager_BSP : MonoBehaviour
     public int setMax;
     public int setHallwaySize;
 
+    int[,] buf;
+
 
     [Range(0, 100)]
     public int setRandomFillPercent;
@@ -21,8 +23,7 @@ public class LevelManager_BSP : MonoBehaviour
     void Start()
     {
         Debug.Log("start");
-        RoomNode root = new RoomNode(0, 0, setWidth, setHeight, 0, setMax, null);
-        CellularMapGenerator cellGene = new CellularMapGenerator(root, setRandomFillPercent);
+        RoomNode root = new RoomNode(0, 0, setWidth, setHeight, 0, setMax, null, setRandomFillPercent);
         makeMap(root, "root");
     }
 
@@ -41,26 +42,38 @@ public class LevelManager_BSP : MonoBehaviour
         {
             makeMap(ptr.getLeftNode(), "left");
             makeMap(ptr.getRightNode(), "right");
-            
-        }else if(ptr == null)
+
+        }
+        else if (ptr == null)
         {
             return;
         }
 
         if (ptr.getLeftNode() == null && ptr.getRightNode() == null)
         {
-            float floorSize = floor.GetComponent<SpriteRenderer>().sprite.bounds.size.x;
-            int[,] buf = ptr.getGrid();
-            for (int i = ptr.getX(); i <= ptr.getWidth() + ptr.getX() -1 ; i++)
+
+            buf = ptr.getGrid();
+
+            for (int a = 0; a < ptr.getWidth(); a++)
             {
-                for (int j = ptr.getY(); j <= ptr.getHeight() + ptr.getY() -1 ; j++)
+                for (int b = 0; b < ptr.getHeight(); b++)
                 {
-                    if (buf[i - ptr.getX(), j - ptr.getY()]  == 1)
+                    Debug.Log((a + b) + "," + (a + b) + " = " + buf[a, b] + " getgridvalue = " + ptr.getGridValue(a,b));
+                }
+            }
+
+            float floorSize = floor.GetComponent<SpriteRenderer>().sprite.bounds.size.x;
+            for (int i = ptr.getX(); i <= ptr.getWidth() + ptr.getX() - 1; i++)
+            {
+                for (int j = ptr.getY(); j <= ptr.getHeight() + ptr.getY() - 1; j++)
+                {
+                    if (buf[i - ptr.getX(), j - ptr.getY()] == 0)
                     {
                         GameObject RoomFloor = Instantiate(floor);
                         RoomFloor.transform.position = new Vector3(floorSize * i, floorSize * j, 0);
                         RoomFloor.name = ptr.getIndex() + "번 노드 바닥" + whereIs;
-                    }else if (buf[i - ptr.getX(), j - ptr.getY()] == 0)
+                    }
+                    else if (buf[i - ptr.getX(), j - ptr.getY()] == 1)
                     {
                         GameObject RoomWall = Instantiate(wall);
                         RoomWall.transform.position = new Vector3(floorSize * i, floorSize * j, 0);
@@ -70,6 +83,7 @@ public class LevelManager_BSP : MonoBehaviour
             }
         }
     }
+
 }
 
 class RoomNode
@@ -83,9 +97,10 @@ class RoomNode
     int index;
     int setMax;
     int[,] grid;
+    int setRandomFillPercent;
 
 
-    public RoomNode(int x, int y, int width, int height, int index, int setMax, RoomNode parentNode)
+    public RoomNode(int x, int y, int width, int height, int index, int setMax, RoomNode parentNode, int setRandomFillPercent)
     {
         this.x = x;
         this.y = y;
@@ -96,9 +111,17 @@ class RoomNode
         this.setMax = setMax;
         this.grid = new int[width, height]; 
         this.index++;
+        this.setRandomFillPercent = setRandomFillPercent;
         if (this.index < this.setMax) { 
             makeNode();
         }
+        if(leftNode == null && rightNode == null)
+        {
+            randomFillMap();
+            calcMap();
+            debugFucn();
+        }
+
     }
 
     void makeNode()
@@ -112,8 +135,8 @@ class RoomNode
             int rightWidth = width - leftWidth;
             if (leftWidth > 4 && rightWidth > 4)
             {
-                leftNode = new RoomNode(x, y, leftWidth, height, index, setMax, this);
-                rightNode = new RoomNode(x + leftWidth, y, rightWidth, height, index, setMax, this);
+                leftNode = new RoomNode(x, y, leftWidth, height, index, setMax, this, setRandomFillPercent);
+                rightNode = new RoomNode(x + leftWidth, y, rightWidth, height, index, setMax, this, setRandomFillPercent);
             }
         }
         else
@@ -123,19 +146,93 @@ class RoomNode
             int rightHeight = height - leftHeight;
             if (leftHeight > 4 && rightHeight > 4)
             {
-                leftNode = new RoomNode(x, y, width, leftHeight, index, setMax, this);
-                rightNode = new RoomNode(x, y + leftHeight, width, rightHeight, index, setMax, this);
+                leftNode = new RoomNode(x, y, width, leftHeight, index, setMax, this, setRandomFillPercent);
+                rightNode = new RoomNode(x, y + leftHeight, width, rightHeight, index, setMax, this, setRandomFillPercent);
             }
         }
-    
+    }
+
+    void randomFillMap()
+    {
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if (Random.Range(0, 100) < setRandomFillPercent)
+                {
+                    grid[i, j] = 1;
+                }
+                else
+                {
+                    grid[i, j] = 0;
+
+                }
+
+            }
+        }
+    }
+
+    void calcMap()
+    {
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if (isDeadCell(i, j) > 4)
+                {
+                    grid[i, j] = 1;
+
+                }
+                else
+                {
+                    grid[i, j] = 0;
+                }
+            }
+        }
+
+    }
+
+    int isDeadCell(int x, int y)
+    {
+        int cnt = 0;
+        for (int neighbourX = x - 1; neighbourX <= x + 1; neighbourX++)
+        {
+            for (int neighbourY = y - 1; neighbourY <= y + 1; neighbourY++)
+            {
+                if (neighbourX >= 0 && neighbourX < width && neighbourY >= 0 && neighbourY < height)
+                {
+                    if (neighbourX != x || neighbourY != y)
+                    {
+                        cnt += grid[neighbourX, neighbourY];
+                    }
+                }
+                else
+                {
+                    cnt++;
+                }
+            }
+        }
+        return cnt;
+    }
+
+    void debugFucn()
+    {
+
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                Debug.Log(index+"번째 노드 " + (i + j) + "," + (i + j) + " = " + grid[i, j]);
+            }
+        }
     }
 
 
+    //Get Set Function
     public int getX()
     {
         return x;
     }
-
     public int getY()
     {
         return y;
@@ -152,31 +249,28 @@ class RoomNode
     {
         return index;
     }
-
     public RoomNode getLeftNode()
     {
         return leftNode;
     } 
-
     public RoomNode getRightNode()
     {
         return rightNode;
     }
-
     public RoomNode getParentNode()
     {
         return parentNode;
     }
-
     public void setGrid(int[,] grid)
     {
         this.grid = grid;
     }
-    
     public int[,] getGrid()
     {
         return grid;
     }
-
-
+    public int getGridValue(int x, int y)
+    {
+        return grid[x, y];
+    }
 }
