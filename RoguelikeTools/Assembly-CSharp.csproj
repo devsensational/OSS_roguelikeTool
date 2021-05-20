@@ -58,8 +58,9 @@
   <ItemGroup>
     <Compile Include="Assets\Script\LevelManager_BSP.cs" />
     <Compile Include="Assets\Script\ColiderAlram.cs" />
-    <Compile Include="Assets\Script\LevelManager_Dice.cs" />
     <Compile Include="Assets\Script\CellularMapGenerator.cs" />
+    <Compile Include="Assets\Script\LevelManager_Dice.cs" />
+    <Compile Include="Assets\Script\Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
