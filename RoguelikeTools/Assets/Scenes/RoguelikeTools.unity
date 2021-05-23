@@ -283,9 +283,9 @@ MonoBehaviour:
   monster1: {fileID: 0}
   monster2: {fileID: 0}
   item: {fileID: 0}
-  setWidth: 100
-  setHeight: 100
-  setMax: 6
+  setWidth: 60
+  setHeight: 60
+  setMax: 7
   setHallwaySize: 2
   setRandomFillPercent: 34
 --- !u!4 &1232421500

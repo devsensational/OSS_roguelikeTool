@@ -1,9 +1,34 @@
+//°³¹ßÀÚ : ±è¼±È£
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+ class SortList
+{
+    int size;
+    RoomNode ptr;
+
+    public SortList(int size, RoomNode ptr)
+    {
+        this.size = size;
+        this.ptr = ptr;
+    }
+
+    public int getSize()
+    {
+        return size;
+    }
+
+    public RoomNode getPtr()
+    {
+        return ptr;
+    }
+}
+
 public class LevelManager_BSP : MonoBehaviour
 {
+
     [SerializeField]
     public GameObject floor;
     public GameObject wall;
@@ -16,15 +41,34 @@ public class LevelManager_BSP : MonoBehaviour
 
     int[,] buf;
 
+    
+    List<SortList> sizeList = new List<SortList>();
 
     [Range(0, 100)]
     public int setRandomFillPercent;
 
     void Start()
     {
-        Debug.Log("start");
-        RoomNode root = new RoomNode(0, 0, setWidth, setHeight, 0, setMax, null, setRandomFillPercent);
+        RoomNode root = new RoomNode(0, 0, setWidth, setHeight, 0, setMax, null, setRandomFillPercent, sizeList);
         makeMap(root, "root");
+        for(int ptr1 = 0; ptr1 < sizeList.Count -1; ptr1++)
+        {
+            for(int ptr2 =1; ptr2 < sizeList.Count - ptr1; ptr2++)
+            {
+                if(sizeList[ptr2 - 1].getSize() > sizeList[ptr2].getSize())
+                {
+                    SortList buf = sizeList[ptr2 - 1];
+                    sizeList[ptr2 - 1] = sizeList[ptr2];
+                    sizeList[ptr2] = buf;
+                }
+            }
+        }
+
+        for(int ptr = 0; ptr < sizeList.Count; ptr++)
+        {
+            Debug.Log(sizeList[ptr].getSize());
+            Debug.Log("ÀÎµ¦½º " + sizeList[ptr].getPtr().getIndex());
+        }
     }
 
     void Update()
@@ -35,6 +79,7 @@ public class LevelManager_BSP : MonoBehaviour
     {
 
     }
+
 
     void makeMap(RoomNode ptr, string whereIs)
     {
@@ -81,6 +126,8 @@ public class LevelManager_BSP : MonoBehaviour
                     }
                 }
             }
+
+            sizeList.Add(new SortList(ptr.getWidth() * ptr.getHeight(), ptr));
         }
     }
 
@@ -98,9 +145,9 @@ class RoomNode
     int setMax;
     int[,] grid;
     int setRandomFillPercent;
+    List<SortList> sizeList;
 
-
-    public RoomNode(int x, int y, int width, int height, int index, int setMax, RoomNode parentNode, int setRandomFillPercent)
+    public RoomNode(int x, int y, int width, int height, int index, int setMax, RoomNode parentNode, int setRandomFillPercent, List<SortList> sizeList)
     {
         this.x = x;
         this.y = y;
@@ -112,6 +159,10 @@ class RoomNode
         this.grid = new int[width, height]; 
         this.index++;
         this.setRandomFillPercent = setRandomFillPercent;
+        this.sizeList = sizeList;
+
+       // this.sizeList.Add(new SortList(width * height, this)); 
+
         if (this.index < this.setMax) { 
             makeNode();
         }
@@ -135,8 +186,8 @@ class RoomNode
             int rightWidth = width - leftWidth;
             if (leftWidth > 4 && rightWidth > 4)
             {
-                leftNode = new RoomNode(x, y, leftWidth, height, index, setMax, this, setRandomFillPercent);
-                rightNode = new RoomNode(x + leftWidth, y, rightWidth, height, index, setMax, this, setRandomFillPercent);
+                leftNode = new RoomNode(x, y, leftWidth, height, index, setMax, this, setRandomFillPercent, sizeList);
+                rightNode = new RoomNode(x + leftWidth, y, rightWidth, height, index, setMax, this, setRandomFillPercent, sizeList);
             }
         }
         else
@@ -146,8 +197,8 @@ class RoomNode
             int rightHeight = height - leftHeight;
             if (leftHeight > 4 && rightHeight > 4)
             {
-                leftNode = new RoomNode(x, y, width, leftHeight, index, setMax, this, setRandomFillPercent);
-                rightNode = new RoomNode(x, y + leftHeight, width, rightHeight, index, setMax, this, setRandomFillPercent);
+                leftNode = new RoomNode(x, y, width, leftHeight, index, setMax, this, setRandomFillPercent, sizeList);
+                rightNode = new RoomNode(x, y + leftHeight, width, rightHeight, index, setMax, this, setRandomFillPercent, sizeList);
             }
         }
     }
