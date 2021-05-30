@@ -8,7 +8,7 @@ using UnityEngine;
 {
     int size;
     RoomNode ptr;
-
+    
     public SortList(int size, RoomNode ptr)
     {
         this.size = size;
