@@ -278,7 +278,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae7f653e6f814e4469270b28cdc212b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floor: {fileID: 8162840227543494235, guid: cf12ad13de36b2245a5df4c25ce1fbd5, type: 3}
+  floor: {fileID: 3657831654675030174, guid: 452e9300467183743884aee55d32c7f6, type: 3}
   wall: {fileID: 233869818404918533, guid: 5033a491df7b8ea4386399576272af47, type: 3}
   monster1: {fileID: 0}
   monster2: {fileID: 0}
