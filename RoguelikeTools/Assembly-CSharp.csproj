@@ -57,14 +57,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Script\LevelManager_BSP.cs" />
-    <Compile Include="Assets\Script\ItemList.cs" />
-    <Compile Include="Assets\Script\ItemPicking.cs" />
-    <Compile Include="Assets\Script\playerControler.cs" />
-    <Compile Include="Assets\Script\LevelManager_Dice.cs" />
-    <Compile Include="Assets\Script\HP.cs" />
+    <Compile Include="Assets\Script\Temporary\ItemList.cs" />
     <Compile Include="Assets\Script\EnemyAI_Melee.cs" />
-    <Compile Include="Assets\Script\EnemyAI_Ranged.cs" />
     <Compile Include="Assets\Script\EnemyAI_Boss.cs" />
+    <Compile Include="Assets\Script\Temporary\ItemPicking.cs" />
+    <Compile Include="Assets\Script\Temporary\playerControler.cs" />
+    <Compile Include="Assets\Script\LevelManager_Dice.cs" />
+    <Compile Include="Assets\Script\EnemyAI_Ranged.cs" />
+    <Compile Include="Assets\Script\Temporary\HP.cs" />
+    <Compile Include="Assets\Script\PlayerControl.cs" />
+    <Compile Include="Assets\Script\CameraMoveManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
