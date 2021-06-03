@@ -1,5 +1,3 @@
-sceneSetups:
-- path: Assets/Scenes/EnemyAITestScene.unity
-  isLoaded: 1
-  isActive: 1
-  isSubScene: 0
+version https://git-lfs.github.com/spec/v1
+oid sha256:6876d51a95e27faa64e027f87550b571e90419399d5dff59692e5936d57bb202
+size 102
