@@ -1,3 +1,50 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b756f6aa72581aa3b06b5281f1fd8fa55ec4a23f62d443688d98510fd071d103
-size 552
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Enemy
+  - hitbox_greenslime
+  - attack
+  - idle
+  - hitbox_damaged
+  - hitbox_wingdemon
+  - enemy_wingdemon_att
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Character
+  - Location
+  - Enemy
+  - PlayerDamaged
+  - Player_Hitbox
+  - Enemy_Hit
+  - Wall
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
